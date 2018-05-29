@@ -1,4 +1,4 @@
-# NFV概述与实战开发
+# 半小时带你深入了解NFV
 - 目录
 - [1.NFV概述](#1)
   - [1.1NFV发展背景](#1.1)
@@ -21,13 +21,13 @@
 
 ## <h2 id="1">1.NFV概述</h2>
 ### <h3 id="1.1">1.1NFV发展背景</h2>
+![NFV发展背景](./img/NFV发展背景.jpg)
 - a) 新型网络业务迅速发展导致流量急速增加（IoV、IoT、AI、VR等）
-- b）运营商部署大量专用网络设备满足需求（专用设备软硬件一体化、扩展受限且设备管理低效）
+- b) 运营商部署大量专用网络设备满足需求（专用设备软硬件一体化、扩展受限且设备管理低效）
 - c) 新增网络服务时，需开发新设备（周期漫长，且需提供机房空间、供电及维护等）
 - d) 运营商业务量增幅与业务收入增幅出现“剪刀差”,同时CAPEX/OPEX不断上升
 - e) 互联网OTT(Over The Top)业务的大规模发展，导致运营商收入大幅度减少。
-- f）为获取一种低成本、高收入的运营方式，网络运营商们提出了NFV
-![NFV发展背景](./img/NFV发展背景.jpg)
+- f) 为获取一种低成本、高收入的运营方式，网络运营商们提出了NFV
 ### <h3 id="1.2">1.2什么是NFV</h3>
 - 概念
     > NFV，即网络功能虚拟化，Network Function Virtualization。
@@ -94,11 +94,11 @@
 - 服务器性能指标查询（uri: /v1/vnf/instances/vdus/）
 ### <h3 id="3.3">3.3镜像制作</h3>
 - 方法一：命令行执行
-    >  先下载CentOS-7-x86_64-Minimal-1708.iso
-       qemu-img create -f qcow2 c10.qcow2 100G
-       virt-install -n centosimg -r 8196 --cpu host -c CentOS-7-x86_64-Minimal-1708.iso --check disk_size=off --disk path=/openstack-image/ydhy_nlkf_vnf.qcow2,device=disk,bus=virtio,size=100,format=qcow2 --vnc --vncport=5900 --vnclisten=0.0.0.0 -v
-       VNC-viewer完成虚拟机的创建
-       部署业务系统
+    >  先下载CentOS-7-x86_64-Minimal-1708.iso  
+       qemu-img create -f qcow2 c10.qcow2 100G  
+       virt-install -n centosimg -r 8196 --cpu host -c CentOS-7-x86_64-Minimal-1708.iso --check disk_size=off --disk path=/openstack-image/ydhy_nlkf_vnf.qcow2,device=disk,bus=virtio,size=100,format=qcow2 --vnc --vncport=5900 --vnclisten=0.0.0.0 -v  
+       VNC-viewer完成虚拟机的创建  
+       部署业务系统  
        关掉虚拟机后得到c10.qcow2镜像文件
 - 方法二：linux服务器中用虚拟系统管理器（简单方便）
 ![linux虚拟系统管理器](./img/linux虚拟系统管理器.jpg)

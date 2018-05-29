@@ -6,7 +6,18 @@
   - [1.3NFV优势](#1.3)
   - [1.4NFV面临的挑战](#1.4)
 - [2.NFV体系架构](#2)
-- [3.NFV开发](#3)
+  - [2.1NFV系统结构](#2.1)
+  - [2.2NFV参考架构](#2.2)
+  - [2.3VNF结构](#2.3)
+  - [2.4VNF完整实例架构](#2.4)
+- [3.VNF开发](#3)
+  - [3.1资源申请](#3.1)
+  - [3.2C10接口开发](#3.2)
+  - [3.3镜像制作](#3.3)
+  - [3.4模板配置](#3.4)
+- [4.完整流程](#4)
+- [附录-名词解释](#5)
+- [附录-参考文档](#6)
 
 ## <h2 id="1">1.NFV概述</h2>
 ### <h3 id="1.1">1.1NFV发展背景</h2>
@@ -18,14 +29,14 @@
 - f）为获取一种低成本、高收入的运营方式，网络运营商们提出了NFV
 ![NFV发展背景](./img/NFV发展背景.jpg)
 ### <h3 id="1.2">1.2什么是NFV</h3>
+- 概念
     > NFV，即网络功能虚拟化，Network Function Virtualization。
       NFV是利用IT虚拟化技术将现有的网络设备功能整合进标准的服务器、存储和交换机等设备，以软件的形式实现网络功能，以此取代目前网络中私有、专用和封闭的网元设备。  
       电信网络将借助NFV技术提高网络设备利用率，降低运营商OPEX/CAPEX支出，加快业务创新的步伐，为用户带来更佳的业务使用体验，以此构造一个有竞争力的、创新的开放生态系统。
+- 图解
 ![什么是NFV](./img/什么是NFV.jpg)   
-<center>图一</center>
-      
+- 传统网络及未来愿景      
 ![传统网络节点设备](./img/传统网络节点设备.jpg)      
-<center>图二</center>
 
 ### <h3 id="1.3">1.3NFV优势</h3>
 - 1.3.1工业标准硬件
@@ -59,21 +70,50 @@
     - 描述：各逻辑功能单元可能由不同的厂家提供，集成在一起部署业务系统是一个很复杂的问题
 - 1.4.6运营商业务引入NFV问题 
      - 描述：需要考虑技术路线、网络架构、业务部署、运维模式等
-## <h2 id="2">二、NFV体系架构</h2>
+## <h2 id="2">2.NFV体系架构</h2>
 ### <h3 id="2.1">2.1NFV系统结构</h3>
 ![NFV系统结构](./img/NFV系统结构.jpg)
 ### <h3 id="2.2">2.2NFV参考架构</h3>
 ![NFV系统结构](./img/NFV参考架构.jpg)
 ### <h3 id="2.3">2.3VNF结构</h3>
 ![VNF结构](./img/VNF结构.jpg)
-### <h3 id="2.4">2.4VNF完整实例架构-能力开放平台</h3>
+### <h3 id="2.4">2.4VNF完整实例架构</h3>
 ![VNF完整实例架构](./img/VNF完整实例架构.jpg)
-## <h2 id="3">三、VNF开发</h2>
-### 1.C10接口开发
-### 2.镜像制作
-### 3.模板配置
-## 四、完整流程
-## 附录-名词解释
+## <h2 id="3">3.VNF开发</h2>
+### <h3 id="3.1">3.1资源申请</h3>
+- 计算资源（虚拟机CPU、内存、硬盘、个数等）
+- 网络资源（根据各业务系统情况申请内网外网的IP段、子网掩码、网关等）
+### <h3 id="3.2">3.2C10接口开发</h3>
+- 鉴权（uri: /v1/vnf/authentication/token）
+- 查询实例状态（uri: /v1/vnf/instances/event/）
+- 配置信息下发（uri: /v1/vnf/instances/configuration）
+- 服务中止通知（uri: /v1/vnf/instances/terminate）
+- 准备扩缩容通知（uri: /v1/vnf/instances/scaling/notify）
+- 扩缩容完成童子（uri: /v1/vnf/instances/scaling/complete）
+- 配置信息修改后下发（uri: /v1/vnf/instances/configuration）
+- 服务器性能指标查询（uri: /v1/vnf/instances/vdus/）
+### <h3 id="3.3">3.3镜像制作</h3>
+- 方法一：命令行执行
+    >  先下载CentOS-7-x86_64-Minimal-1708.iso
+       qemu-img create -f qcow2 c10.qcow2 100G
+       virt-install -n centosimg -r 8196 --cpu host -c CentOS-7-x86_64-Minimal-1708.iso --check disk_size=off --disk path=/openstack-image/ydhy_nlkf_vnf.qcow2,device=disk,bus=virtio,size=100,format=qcow2 --vnc --vncport=5900 --vnclisten=0.0.0.0 -v
+       VNC-viewer完成虚拟机的创建
+       部署业务系统
+       关掉虚拟机后得到c10.qcow2镜像文件
+- 方法二：linux服务器中用虚拟系统管理器（简单方便）
+![linux虚拟系统管理器](./img/linux虚拟系统管理器.jpg)
+### <h3 id="3.4">3.4模板配置</h3>
+- VNF信息
+- VDU信息
+- 网络信息
+- 弹性扩缩容信息
+## <h2 id="4">四、完整流程</h2>
+- 登录VNFM系统
+- 上传模板
+- 上传镜像
+- 开始部署
+- 访问业务
+## <h2 id="5">附录-名词解释</h2>
 - NFV
 > NFV，即网络功能虚拟化，Network Function Virtualization。通过使用x86等通用性硬件以及虚拟化技术，来承载很多功能的软件处理。从而降低网络昂贵的设备成本。可以通过软硬件解耦及功能抽象，使网络设备功能不再依赖于专用硬件，资源可以充分灵活共享，实现新业务的快速开发和部署，并基于实际业务需求进行自动部署、弹性伸缩、故障隔离和自愈等。
   典型应用是一些CPU密集型功能，并且对网络吞吐量要求不高的情形。主要评估的功能虚拟化有：WAN加速器，信令会话控制器，消息路由器，IDS,DPI，防火墙，CG-NAT, SGSN/GGSN, PE, BNG, RAN等。
@@ -141,3 +181,15 @@
 > Virtualised Infrastructure Manager虚拟化基础设施管理器
 - ETSI
 > 欧洲电信标准化协会（ETSI）(European Telecommunications Standards Institute)是由欧共体委员会1988年批准建立的一个非营利性的电信标准化组织，总部设在法国南部的尼斯。ETSI的标准化领域主要是电信业，并涉及与其他组织合作的信息及广播技术领域。ETSI作为一个被CEN（欧洲标准化协会）和CEPT（欧洲邮电主管部门会议）认可的电信标准协会，其制定的推荐性标准常被欧共体作为欧洲法规的技术基础而采用并被要求执行。
+## <h2 id="6">附录-参考文档</h2>
+- [linux添加开机自启动脚本示例详解](https://blog.csdn.net/linuxshine/article/details/50717272)
+- [CentOS 7.0系统安装配置图解教程](https://www.osyunwei.com/archives/7829.html)
+- [shell脚本修改文件内容时遇到的坑](https://www.cnblogs.com/ljhoracle/p/6277064.html)
+- [Linux下安装Tomcat服务器和部署Web应用](https://www.cnblogs.com/xdp-gacl/p/4097608.html)
+- [Linux配置浮动IP实现WEB高可用](https://www.cnblogs.com/victorwu/p/7061168.html)
+- [负载均衡选型](https://blog.csdn.net/lovewebeye/article/details/52846624)
+- [基于nginx + lua实现的反向代理动态更新](https://www.cnblogs.com/shihuc/p/8044753.html)
+- [OpenStack Virtual Machine Image Guide](https://docs.openstack.org/image-guide/)
+- [命令行利用KVM创建虚拟机(virt-install)](http://blog.51cto.com/tianhao936/1343767)
+- [shell脚本获取配置文件中的内容](https://blog.csdn.net/wyl9527/article/details/72578473)
+- [十张图看懂SDN与NFV的区别与联系](http://www.doit.com.cn/p/255330.html)
